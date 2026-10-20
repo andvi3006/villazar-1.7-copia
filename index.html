@@ -1,0 +1,2772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>f@rmaVillaZar · Sistema POS & ERP Avanzado V4</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+   :root {
+  --p1: #6a0dad;
+  --p2: #00d5ff; 
+  --p3: #a855f7;
+  --c1: #0077b6; 
+  --c2: #b400d8; 
+  --c3: #ff1919;
+  /* solor del fondo/función de las seciones */
+  --bg: #000000; 
+  /*fondo del sidebar*/
+  --bg2: #270136; 
+  --bg3: #330e0e;
+  /* color del login*/
+  --card: rgb(22, 10, 40); 
+  --card2: rgba(39, 24, 72, 0.8);
+  /* cambia el color del borde del login*/
+  --border: rgb(10, 17, 44);
+  --border-focus: rgba(168, 85, 247, 0.4);
+  /*color del igb,fecha, total,*/
+  --text: #ffffff; 
+  /* da color a todos los textos */
+  --muted: #fdfdff;
+  --success: #10b981; 
+  --danger: #ef4444; 
+  --warning: #f59e0b;
+}
+
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
+}
+
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  min-height: 100vh; 
+  display: flex; 
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- LOGIN --- */
+.login-overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: radial-gradient(circle at center, var(--bg2) 0%, var(--bg) 100%); 
+  z-index: 10000; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 20px; 
+}
+
+.login-box { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  backdrop-filter: blur(12px);
+  padding: 2rem; 
+  border-radius: 16px; 
+  width: 100%; 
+  max-width: 380px; 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+  text-align: center; 
+}
+
+.login-box h2 { 
+  font-family: 'Syne', sans-serif; 
+  font-weight: 700; 
+  font-size: 1.5rem; 
+  color: #fff; 
+  margin-bottom: 0.4rem; 
+  letter-spacing: -0.02em;
+}
+
+.login-box p { 
+  color: var(--muted); 
+  font-size: 0.85rem; 
+  margin-bottom: 1.75rem; 
+}
+
+.login-group { 
+  text-align: left; 
+  margin-bottom: 1.1rem; 
+}
+
+.login-group label { 
+  display: block; 
+  font-size: 0.75rem; 
+  font-weight: 600; 
+  color: var(--muted); 
+  margin-bottom: 6px; 
+  text-transform: uppercase; 
+  letter-spacing: 0.05em;
+}
+
+.login-group input { 
+  width: 100%; 
+  padding: 0.65rem 0.9rem; 
+  background: rgba(0, 0, 0, 0.2); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  color: #fff; 
+  outline: none; 
+  font-size: 0.9rem; 
+  transition: all 0.2s ease; 
+}
+
+.login-group input:focus { 
+  border-color: var(--p3); 
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.15); 
+}
+
+.btn-login { 
+  width: 100%; 
+  padding: 0.7rem; 
+  background: linear-gradient(135deg, var(--p1), var(--p2)); 
+  color: #fff; 
+  border: none; 
+  border-radius: 8px; 
+  font-size: 0.9rem; 
+  font-weight: 600; 
+  cursor: pointer; 
+  margin-top: 0.75rem; 
+  transition: all 0.2s ease; 
+  font-family: 'Syne', sans-serif; 
+}
+
+.btn-login:hover { 
+  transform: translateY(-1px); 
+  box-shadow: 0 4px 12px rgba(139,47,201,0.3); 
+}
+
+.btn-login:active { transform: translateY(0); }
+
+.login-error { 
+  color: var(--danger); 
+  font-size: 0.8rem; 
+  margin-top: 12px; 
+  display: none; 
+  background: rgba(239, 68, 68, 0.08); 
+  padding: 8px; 
+  border-radius: 6px; 
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+/* --- SIDEBAR --- */
+.sidebar { 
+  width: 240px; 
+  background: var(--bg2); 
+  border-right: 1px solid var(--border); 
+  padding: 1.5rem 0.75rem; 
+  display: flex; 
+  flex-direction: column; 
+  position: fixed; 
+  height: 100%; 
+  z-index: 100; 
+}
+
+.brand { 
+  font-family: 'Syne', sans-serif; 
+  font-weight: 700; 
+  font-size: 1.25rem; 
+  color: #32a4cd; 
+  margin-bottom: 2rem; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding-left: 0.5rem;
+}
+
+.brand span { color: var(--c2); }
+
+.menu-btn { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 0.65rem 0.85rem; 
+  color: var(--muted); 
+  background: none; 
+  border: none; 
+  width: 100%; 
+  text-align: left; 
+  font-size: 0.88rem; 
+  font-weight: 500; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  margin-bottom: 4px; 
+}
+
+.menu-btn:hover { 
+  background: rgba(255, 255, 255, 0.03); 
+  color: #04d4eb; 
+}
+
+.menu-btn.active { 
+  background: linear-gradient(135deg, rgba(106,13,173,0.4), rgba(139,47,201,0.4)); 
+  border: 1px solid var(--border-focus);
+  color: #e6abee; 
+}
+
+.logout-btn { 
+  margin-top: auto; 
+  background: rgba(239, 68, 68, 0.05); 
+  color: #fca5a5; 
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.logout-btn:hover { 
+  background: var(--danger); 
+  color: #ffffff; 
+  border-color: transparent;
+}
+
+/* --- MAIN CONTAINER --- */
+.main-content { 
+  margin-left: 240px; 
+  flex: 1; 
+  padding: 1.75rem; 
+  width: calc(100% - 240px); 
+  display: none; 
+}
+
+body.authenticated .main-content { display: block; }
+body.authenticated .login-overlay { display: none; }
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+.section-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 1.5rem; 
+}
+/*cambia el color de los titulos principales del fondo blanco*/
+.section-header h1 { 
+  font-family: 'Syne', sans-serif; 
+  font-weight: 700; 
+  font-size: 1.4rem; 
+  color: #ffffff; 
+}
+
+/* --- GRID LAYOUTS --- */
+.pos-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.panel-card { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  backdrop-filter: blur(8px);
+  border-radius: 14px; 
+  padding: 1.25rem; 
+  margin-bottom: 16px; 
+}
+
+.panel-title { 
+  font-family: 'Syne', sans-serif; 
+  font-size: 0.95rem; 
+  font-weight: 600; 
+  margin-bottom: 1rem; 
+  color: #fff; 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
+
+/* --- CONTROLES DE FORMULARIO --- */
+.form-group { margin-bottom: 1rem; }
+
+.form-group label { 
+  display: block; 
+  font-size: 0.8rem; 
+  color: var(--muted); 
+  margin-bottom: 4px; 
+  font-weight: 500; 
+}
+
+.input-ctrl { 
+  width: 100%; 
+  padding: 0.55rem 0.8rem; 
+  background: rgba(255, 255, 255, 0.15); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  color: #fff; 
+  font-size: 0.88rem; 
+  outline: none; 
+  transition: all 0.2s ease; 
+}
+
+.input-ctrl:focus { 
+  border-color: var(--p3); 
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+
+/* --- TABLAS --- */
+.table-wrapper { 
+  overflow-x: auto; 
+  margin-top: 0.75rem; 
+  border-radius: 10px; 
+  border: 1px solid var(--border); 
+  background: var(--bg2); 
+}
+
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  text-align: left; 
+  font-size: 0.85rem; 
+}
+
+th { 
+  background: rgba(255, 255, 255, 0.02); 
+  padding: 10px 14px; 
+  font-weight: 600; 
+  color: #efefef; 
+  border-bottom: 1px solid var(--border); 
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+td { 
+  padding: 10px 14px; 
+  border-bottom: 1px solid rgba(168,85,247,0.06); 
+  color: rgba(240, 230, 255, 0.9);
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgb(78, 6, 134); }
+
+/* --- ALERTAS --- */
+.alert-row-yellow { background: rgba(245, 158, 11, 0.04); border-left: 3px solid var(--warning); }
+.alert-row-roja { background: rgba(239, 68, 68, 0.04); border-left: 3px solid var(--danger); }
+.badge-alert-yellow { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-alert-roja { background: rgba(239, 68, 68, 0.15); color: #ff8080; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* --- BOTONES --- */
+.btn { 
+  padding: 0.5rem 1rem; 
+  border-radius: 8px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  font-size: 0.82rem; 
+  border: none; 
+  transition: all 0.2s ease; 
+  text-decoration: none; 
+  font-family: 'Syne', sans-serif; 
+}
+
+.btn-primary { background: linear-gradient(135deg, var(--p1), var(--p2)); color: #fff; }
+.btn-primary:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(139,47,201,0.2); }
+.btn-success { background: rgba(16, 185, 129, 0.9); color: #fff; }
+.btn-success:hover { background: var(--success); transform: translateY(-1px); }
+.btn-danger { background: rgba(239, 68, 68, 0.9); color: #fff; }
+.btn-danger:hover { background: var(--danger); transform: translateY(-1px); }
+.btn-secondary { background: rgba(255, 255, 255, 0.05); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.08); }
+.btn:active { transform: translateY(0); }
+
+/* --- BADGES --- */
+.badge { 
+  padding: 3px 8px; 
+  border-radius: 5px; 
+  font-size: 0.72rem; 
+  font-weight: 600; 
+  display: inline-block; 
+}
+.badge-purple { background: rgba(168,85,247,0.12); color: var(--p3); border: 1px solid rgba(168,85,247,0.25); }
+.badge-green { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+
+/* --- BÚSQUEDA PREDICTIVA --- */
+.search-container {
+  position: relative; /* Contenedor padre referencial */
+}
+
+.predictive-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: #160a28; /* Color oscuro idéntico a tus paneles */
+  border: 1px solid var(--p3);
+  border-radius: 0 0 12px 12px;
+  z-index: 999999 !important; /* Capa superalta para que nada lo tape */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.predictive-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+}
+
+.predictive-item:hover {
+  background-color: var(--p3);
+}
+/* --- TICKET / MODAL RECEIPT --- */
+/* --- TICKET / MODAL RECEIPT COMPACTO Y MODERNO --- */
+.receipt-backdrop { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.65); 
+  backdrop-filter: blur(5px); 
+  z-index: 2000; 
+  display: none; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 10px; 
+}
+
+.receipt-paper { 
+  background: #ffffff; 
+  color: #111111; 
+  padding: 1rem 1.2rem; 
+  border-radius: 8px; 
+  width: 100%; 
+  max-width: 300px; /* Ancho ajustado ideal para ticket térmico */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
+  font-size: 0.75rem; 
+  line-height: 1.25;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.receipt-paper h3 { 
+  font-family: 'Syne', sans-serif;
+  text-align: center; 
+  font-size: 1.15rem; 
+  font-weight: 800; 
+  color: #000; 
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.receipt-paper p { 
+  text-align: center; 
+  margin-bottom: 2px; 
+  font-size: 0.72rem;
+  color: #444;
+}
+
+.receipt-info {
+  margin: 6px 0;
+  font-size: 0.73rem;
+  line-height: 1.3;
+}
+
+.receipt-info p {
+  text-align: left;
+  color: #111;
+}
+
+.receipt-line { 
+  border-top: 1px dashed #777; 
+  margin: 6px 0; 
+}
+
+.receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+  margin: 4px 0;
+}
+
+.receipt-table th {
+  background: none;
+  color: #000;
+  padding: 3px 0;
+  font-weight: 700;
+  border-bottom: 1px dashed #777;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.receipt-table td {
+  padding: 3px 0;
+  color: #111;
+  border-bottom: none;
+  vertical-align: top;
+}
+
+.receipt-totals-row { 
+  display: flex; 
+  justify-content: space-between; 
+  font-size: 0.75rem;
+  margin-top: 2px;
+  color: #333;
+}
+
+.receipt-totals-row.grand-total { 
+  font-weight: 800; 
+  font-size: 0.95rem; 
+  color: #000; 
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #777;
+}
+
+/* --- INLINE ADDERS --- */
+.inline-adder { display: flex; gap: 6px; margin-top: 6px; }
+
+.inline-adder input { 
+  flex: 1; 
+  padding: 0.45rem 0.7rem; 
+  background: rgba(0, 0, 0, 0.2); 
+  border: 1px solid var(--border); 
+  border-radius: 6px; 
+  color: #fff; 
+  font-size: 0.82rem; 
+  outline: none; 
+}
+
+/* --- UTILERÍA MODAL EDIT --- */
+.edit-auth-box { 
+  padding: 10px; 
+  background: rgba(239, 68, 68, 0.03); 
+  border: 1px dashed rgba(239, 68, 68, 0.25); 
+  border-radius: 8px; 
+  margin-bottom: 12px; 
+  font-size: 0.8rem;
+}
+
+/* --- CUADRE CAJA STYLE --- */
+.box-closure-summary { 
+  background: linear-gradient(135deg, rgba(29, 53, 87, 0.6), rgba(69, 123, 157, 0.6)); 
+  backdrop-filter: blur(8px);
+  border-radius: 12px; 
+  padding: 1rem 1.2rem; 
+  margin-top: 12px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  border: 1px solid rgba(255,255,255,0.08); 
+  font-size: 0.88rem;
+}
+/* Corrección para los menús desplegables (Selects) */
+select.input-ctrl, select {
+  background-color: var(--card) !important;
+  color: #ffffff !important;
+}
+
+/* Forzar color oscuro en la lista de opciones desplegadas */
+select option {
+  background-color: #120924 !important; /* Fondo oscuro morado */
+  color: #ffffff !important;            /* Texto blanco */
+  padding: 10px;
+}
+/* --- SOLUCIÓN DE CAPAS PARA EL BUSCADOR FLOTANTE --- */
+
+/* 1. Obliga a la tarjeta del buscador a estar por encima de la tarjeta de la tabla */
+#sec-ventas .pos-grid > div > .panel-card:first-child,
+#sec-ingresos .pos-grid > div > .panel-card:first-child {
+  position: relative;
+  z-index: 10; 
+}
+
+/* 2. Asegura que la tarjeta de la tabla quede en un plano inferior */
+#sec-ventas .pos-grid > div > .panel-card:nth-child(2),
+#sec-ingresos .pos-grid > div > .panel-card:nth-child(2) {
+  position: relative;
+  z-index: 1; 
+}
+
+/* 3. Ajustes de seguridad para los resultados predictivos */
+.predictive-results {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 999999 !important;
+  background-color: #160a28 !important; /* Mismo tono oscuro */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important; /* Sombra pronunciada para dar efecto de flotado */
+}
+/* Estado ACTIVO para el botón de Efectivo */
+#btn-pay-efectivo.active {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border: 2px solid #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+  font-weight: bold;
+}
+
+/* Estado ACTIVO para el botón de Yape / Plin */
+#btn-pay-yape.active {
+  background: rgba(0, 213, 255, 0.25) !important;
+  border: 2px solid #00d5ff !important;
+  color: #00d5ff !important;
+  box-shadow: 0 0 12px rgba(0, 213, 255, 0.4);
+  font-weight: bold;
+}
+
+/* --- COLOR AZUL OSCURO GLOBAL PARA LA BOLETA Y TICKET --- */
+#receipt-modal,
+#receipt-modal *,
+.receipt-paper,
+.receipt-paper h3,
+.receipt-paper p,
+.receipt-paper span,
+.receipt-info,
+.receipt-info p,
+.receipt-table,
+.receipt-table th,
+.receipt-table td,
+.receipt-table small,
+.receipt-totals-row,
+.receipt-totals-row.grand-total {
+  color: #050b30 !important; /* Azul oscuro constante */
+}
+
+/* Forzar que bordes y líneas divisorias sean azul oscuro */
+.receipt-line,
+.receipt-table th,
+.receipt-totals-row.grand-total {
+  border-color: #050b30 !important;
+}
+
+/* --- REGLAS DE IMPRESIÓN --- */
+@media print {
+  /* Ocultar todo el contenido de la web */
+  body > * {
+    display: none !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Mostrar solo la boleta pegada arriba */
+  #receipt-modal {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .receipt-paper {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 4mm !important;
+    width: 80mm !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+  }
+
+  /* Ocultar botones de cierre/impresión */
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* --- ESTILO DEL LOGO EN EL TICKET --- */
+.receipt-logo {
+  max-width: 180px; /* Tamaño ideal para ticket de 80mm */
+  height: auto;
+  display: block;
+  margin: 0 auto 6px auto;
+  object-fit: contain;
+}
+
+/* Asegurar que la imagen se mantenga visible al imprimir */
+@media print {
+  .receipt-logo {
+    max-width: 160px !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <div class="login-overlay" id="login-screen">
+    <div class="login-box">
+      <div style="font-size: 2.5rem; color: var(--p3); margin-bottom: 1rem;"><i class="ri-capsule-fill"></i></div>
+      <h2>f@rmaVillaZar</h2>
+      <p>Sistema Avanzado V4 ERP & POS</p>
+      <div class="login-group">
+        <label>Usuario</label>
+        <input type="text" id="login-user" value="admin">
+      </div>
+      <div class="login-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-pass" value="admin123">
+      </div>
+      <div class="login-group">
+        <label>Código Secreto</label>
+        <input type="password" id="login-secret" value="FARMA777">
+      </div>
+      <button class="btn-login" onclick="validateLogin()">INGRESAR AL SISTEMA CORPORATIVO</button>
+      <div class="login-error" id="login-error-msg">⚠️ Credenciales incorrectas. Verifique e intente nuevamente.</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="brand"><i class="ri-heart-pulse-line"></i> f@rma<span>VillaZar</span></div>
+    <button class="menu-btn active" onclick="switchSection('ventas', this)"><i class="ri-computer-line"></i> Ventas / POS</button>
+    <button class="menu-btn" onclick="switchSection('caja', this)"><i class="ri-money-dollar-box-line"></i> caja</button>
+    <button class="menu-btn" onclick="switchSection('inventario-real', this)"><i class="ri-archive-line"></i> Inventario Real</button>
+    <button class="menu-btn" onclick="switchSection('productos', this)"><i class="ri-add-box-line"></i> Crear Productos</button>
+    <button class="menu-btn" onclick="switchSection('ingresos', this)"><i class="ri-download-2-line"></i> Ingresar Almacén</button>
+    <button class="menu-btn" onclick="switchSection('precios', this)"><i class="ri-money-dollar-box-line"></i> Precios de Lista</button>
+    <button class="menu-btn" onclick="switchSection('simulador', this)"><i class="ri-file-list-3-line"></i> Pedido Simulado</button>
+        <!-- SECCIÓN DE RESPALDO (SISTEMA) -->
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0; opacity: 0.5;">
+    <p style="font-size: 0.75rem; color: var(--text-muted); padding: 0 15px; margin-bottom: 8px; font-weight: bold; uppercase;">Mantenimiento</p>
+
+    <button class="menu-btn" onclick="exportData()" style="color: #2ec4b6;">
+      <i class="ri-download-cloud-2-line"></i> Descargar Copia
+    </button>
+
+    <button class="menu-btn" onclick="document.getElementById('file-input').click()" style="color: #ff9f1c;">
+      <i class="ri-upload-cloud-2-line"></i> Subir Copia
+    </button>
+    <input type="file" id="file-input" style="display:none" accept=".json" onchange="importData(event)">
+    <button class="menu-btn logout-btn" onclick="logout()"><i class="ri-logout-box-line"></i> Cerrar Sesión</button>
+  </div>
+
+  <div class="main-content">
+
+    <div id="sec-ventas" class="page-section active">
+      <div class="section-header">
+        <h1>Módulo de Caja y Ventas</h1>
+        <div class="badge badge-purple">POS Multiproducto</div>
+      </div>
+      <div class="pos-grid">
+        <div>
+          <div class="panel-card">
+            <div class="panel-title"><i class="ri-search-line"></i> 1. Buscar Medicamento</div>
+            <div class="search-container">
+              <input type="text" class="input-ctrl" id="pos-search" placeholder="Escriba el nombre del medicamento para seleccionarlo..." oninput="handleSearch(this.value)" onkeydown="handleSearchKeyPress(event)">
+              <div class="predictive-results" id="search-box"></div>
+            </div>
+
+            <div id="pre-add-panel" style="display:none; margin-top:15px; padding:15px; background:var(--card2); border-radius:12px; border:1px solid var(--p3);">
+              <h4 id="pre-title" style="margin-bottom:10px; color:#fff;">Producto Seleccionado</h4>
+              <input type="hidden" id="pre-id">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tipo Despacho</label>
+                  <select class="input-ctrl" id="pre-mode" onchange="updatePrePrice()">
+                    <option value="Unidad">Unidad Suelta</option>
+                    <option value="Blíster">Blíster</option>
+                    <option value="Caja">Caja Completa</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Precio Unit./Caja (Editable)</label>
+                  <input type="number" step="0.01" class="input-ctrl" id="pre-price">
+                </div>
+                <div class="form-group">
+                  <label>Cantidad</label>
+                  <input type="number" class="input-ctrl" id="pre-qty" value="1" min="1">
+                </div>
+              </div>
+              <div style="text-align:right; margin-top:5px;">
+                <button class="btn btn-primary" onclick="confirmAddToCart()"><i class="ri-add-line"></i> ➕ Agregar a la Lista</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-title"><i class="ri-shopping-cart-line"></i> 2. Lista de Productos a Facturar</div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Medicamento</th>
+                    <th>Venta Por</th>
+                    <th>Precio Unit.</th>
+                    <th>Cant.</th>
+                    <th>Subtotal</th>
+                    <th>Quitar</th>
+                  </tr>
+                </thead>
+                <tbody id="cart-table-body">
+                  <tr><td colspan="6" style="text-align:center; color:var(--muted);">La lista está vacía. Seleccione un producto arriba y agréguelo.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="panel-card">
+            <div class="panel-title"><i class="ri-user-add-line"></i> Datos del Cliente y Comprobante</div>
+            
+            <div class="form-group">
+              <label>Tipo de Comprobante</label>
+              <select class="input-ctrl" id="sale-doc-type" onchange="handleDocTypeChange()">
+                <option value="BOLETA" selected>Boleta de Venta</option>
+                <option value="FACTURA">Factura Electrónica</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label id="lbl-cli-doc">DNI del Cliente</label>
+              <input type="text" class="input-ctrl" id="cli-doc" placeholder="Ej. 74839201" maxlength="11">
+            </div>
+
+            <div class="form-group">
+              <label id="lbl-cli-name">Nombres y Apellidos</label>
+              <input type="text" class="input-ctrl" id="cli-name" placeholder="Ej. Juan Pérez">
+            </div>
+
+            <div class="form-group">
+              <label>Dirección Fiscal / Domicilio</label>
+              <input type="text" class="input-ctrl" id="cli-address" placeholder="Ej. Av. Los Próceres 123">
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="panel-title"><i class="ri-calculator-line"></i> Totales de Operación</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Subtotal:</span><span id="tot-sub">S/. 0.00</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>IGV (18%):</span><span id="tot-igv">S/. 0.00</span></div>
+            <hr style="border-color:var(--border); margin:12px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:1.3rem; font-weight:700; color:#fff;"><span>TOTAL:</span><span id="tot-final">S/. 0.00</span></div>
+            <!-- Selector de Método de Pago -->
+            <div class="payment-method-container my-3">
+              <label class="form-label fw-bold small text-muted text-uppercase d-block mb-2">Método de Pago</label>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-success flex-fill payment-btn active" id="btn-pay-efectivo" onclick="setPaymentMethod('efectivo')">
+                  💵 Efectivo
+                </button>
+                <button type="button" class="btn btn-outline-primary flex-fill payment-btn" id="btn-pay-yape" onclick="setPaymentMethod('yape')">
+                  📱 Yape / Plin
+                </button>
+              </div>
+            </div>
+            <button class="btn btn-success" style="width:100%; margin-top:15px; justify-content:center; padding:0.9rem;" onclick="processSale()"><i class="ri-printer-line"></i> Grabar e Imprimir Venta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-caja" class="page-section">
+      <div class="section-header">
+        <h1>Arqueo, Cuadre Diario e Historial de Caja</h1>
+        <div class="badge badge-green">Auditoría Financiera</div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title"><i class="ri-history-line"></i> Consultar Ventas Emitidas</div>
+        <div class="form-row" style="max-width:400px; margin-bottom:15px;">
+          <div class="form-group">
+            <label>Seleccione Fecha de Auditoría</label>
+            <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+              <div>
+                <label style="font-size: 0.85rem; color: var(--muted); display:block; margin-bottom:4px;">Fecha Inicial (Desde):</label>
+                <input type="date" id="search-sale-start-date" class="input-ctrl" onchange="renderSalesHistory()">
+              </div>
+              <div>
+                <label style="font-size: 0.85rem; color: var(--muted); display:block; margin-bottom:4px;">Fecha Final (Hasta):</label>
+                <input type="date" id="search-sale-end-date" class="input-ctrl" onchange="renderSalesHistory()">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Reemplaza el bloque actual por este -->
+        <div class="box-closure-summary" id="closure-box-container" style="margin-top:20px; display:block; background:rgba(0,180,100,0.15); padding:15px; border-radius:10px; border:1px solid rgba(0,180,100,0.3);">
+        <div style="margin-bottom: 10px;">
+            <div style="font-size:0.85rem; font-weight:600; text-transform:uppercase;" id="closure-date-label">Fecha: No seleccionada</div>
+            <div style="font-size:0.75rem; color:var(--muted);">Suma total automatizada en base a boletas grabadas</div>
+        </div>
+        
+        <!-- Aquí el JS insertará las tarjetas de Efectivo, Yape, Total y Margen -->
+        <div id="closure-total-amount"></div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>N° Comprobante</th>
+                <th>Fecha/Hora</th>
+                <th>Cliente / Datos</th>
+                <th>Desglose Detallado de Fármacos Vendidos</th>
+                <th>Total Cobrado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="sales-history-body">
+              <tr><td colspan="6" style="text-align:center; color:var(--muted);">Seleccione una fecha para ver el historial de arqueo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-ingresos" class="page-section">
+      <div class="section-header">
+        <h1>Ingreso Manual de Almacén</h1>
+      </div>
+      <div class="pos-grid">
+        <div class="panel-card">
+          <div class="panel-title"><i class="ri-login-box-line"></i> Cargar Stock y Lotes</div>
+          
+          <div class="form-group">
+            <label>Buscar Producto para añadir Stock</label>
+            <div class="search-container">
+              <input type="text" class="input-ctrl" id="ing-search-input" placeholder="Escriba el nombre para buscar en Almacén..." oninput="handleIngressSearch(this.value)">
+              <div class="predictive-results" id="ing-search-box" style="display:none;"></div>
+            </div>
+            <input type="hidden" id="ing-prod"> 
+            <div id="ing-selected-feedback" style="margin-top: 8px; font-weight: 600; color: var(--p3);"></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group"><label>Cantidad Ingreso</label><input type="number" class="input-ctrl" id="ing-qty" value="1"></div>
+            <div class="form-group">
+              <label>Ingresar por Tipo</label>
+              <select class="input-ctrl" id="ing-unit-type">
+                <option value="Caja">Cajas Enteras</option>
+                <option value="Unidad">Unidades Sueltas</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <input type="hidden" id="ing-lot" value="LOTE-VILLAZAR">
+            <div class="form-group" style="width: 100%;">
+              <label>Vencimiento (Obligatorio para alertas)</label>
+              <input type="date" class="input-ctrl" id="ing-expiry">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Costo de Compra S/.</label><input type="number" step="0.01" class="input-ctrl" id="ing-cost" placeholder="0.00"></div>
+            <div class="form-group">
+              <label>Costo Aplicado a</label>
+              <select class="input-ctrl" id="ing-cost-mode">
+                <option value="Caja">Por Caja</option>
+                <option value="Unidad">Por Unidad</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-success" onclick="executeIngress()"><i class="ri-download-cloud-line"></i> Guardar en Inventario Real</button>
+        </div>
+        <div class="panel-card">
+          <div class="panel-title"><i class="ri-archive-line"></i> Kárdex Detallado de Lotes cargados</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Medicamento</th><th>Lote</th><th>Vence</th><th>Stock Físico total (uds)</th></tr>
+              </thead>
+              <tbody id="inventory-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULO DE INVENTARIO REAL RE-ESTRUCTURADO CON FILTRADO AVANZADO -->
+    <div id="sec-inventario-real" class="page-section">
+      <div class="section-header">
+        <h1>Kárdex Central, Lotes y Fechas de Vencimiento</h1>
+        <div class="badge badge-green">Monitoreo Epidemiológico</div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title"><i class="ri-filter-2-line"></i> Filtrar Stock Real y Alertas de Vencimiento Corto</div>
+        
+        <!-- Zona del Buscador Avanzado Estructurado -->
+        <div class="form-row" style="margin-bottom: 15px; align-items: flex-end;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-weight: 600;">Buscar por:</label>
+            <select id="inv-search-type" class="input-ctrl" onchange="toggleInventorySearchType()">
+              <option value="nombre" selected>Nombre / Descripción</option>
+              <option value="categoria">Categoría del Medicamento</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex: 2; margin-bottom: 0;" id="inv-search-field-container">
+            <!-- Renderizado Inicial por Nombre -->
+            <input type="text" class="input-ctrl" id="inv-search" placeholder="Escriba el nombre del producto en stock..." oninput="renderRealInventory()">
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Código / Lote</th>
+                <th>Descripción Completa</th>
+                <th>Fecha Vencimiento</th>
+                <th>Estado / Alerta</th>
+                <th>Stock Físico (Uds)</th>
+                <th>Gestión de Registro</th>
+              </tr>
+            </thead>
+            <tbody id="real-inventory-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-productos" class="page-section">
+      <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px; flex-wrap: wrap;">
+        <h1>Catálogo de Productos</h1>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title"><i class="ri-add-circle-line"></i> Registro de Nuevo Medicamento</div>
+        
+        <div style="position: relative; margin-bottom: 20px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; border: 1px dashed rgba(255,255,255,0.1);">
+          <label style="font-weight: 600; display: block; margin-bottom: 6px; color: #00d5ff;">🔍 Buscar Producto existente para Editar:</label>
+          <input type="text" id="catalog-search-input" class="input-ctrl" placeholder="Escriba nombre o código de barra..." oninput="handleCatalogProductSearch(this.value)" autocomplete="off">
+          <div id="catalog-search-box" style="display: none; position: absolute; left: 12px; right: 12px; background: #1e1a3a; border: 1px solid #00d5ff; max-height: 220px; overflow-y: auto; z-index: 999; border-radius: 4px; box-shadow: 0px 5px 15px rgba(0,0,0,0.5);"></div>
+        </div>
+
+        <input type="hidden" id="p-id-edit">
+
+        <div class="form-group">
+          <label>Descripción / Nombre Comercial</label>
+          <input type="text" class="input-ctrl" id="p-desc" placeholder="Ej. Paracetamol 500mg">
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Unidades por Caja</label><input type="number" class="input-ctrl" id="p-box-units" value="100"></div>
+          <div class="form-group"><label>Unidades por Blíster</label><input type="number" class="input-ctrl" id="p-blister-units" value="10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoría del Medicamento:</label>
+            <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+              <select id="p-cat" class="input-ctrl" style="flex: 1;"></select>
+              <button type="button" class="btn btn-primary" onclick="addCategory()" style="padding: 4px 10px;">+ Añadir</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Forma Farmacéutica:</label>
+            <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+              <select id="p-forma" class="input-ctrl" style="flex: 1;"></select>
+              <button type="button" class="btn btn-primary" onclick="addForma()" style="padding: 4px 10px;">+ Añadir</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group"><label>Código de Barras</label><input type="text" class="input-ctrl" id="p-barcode" placeholder="Escanee código de barras"></div>
+        
+        <div style="margin: 15px 0; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(255,255,255,0.01);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--p2); margin-bottom: 10px;"><i class="ri-money-dollar-circle-line"></i> CONFIGURACIÓN DE PRECIOS E IGV</div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Costo Base (S/.)</label>
+              <input type="number" step="0.01" class="input-ctrl" id="p-cost" value="0.00">
+            </div>
+            <div class="form-group">
+              <label>Modo Costeo</label>
+              <select class="input-ctrl" id="p-cost-mode">
+                <option value="Caja">Por Caja</option>
+                <option value="Unidad">Por Unidad</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Precio Venta Caja (S/.)</label>
+              <input type="number" step="0.01" class="input-ctrl" id="p-price-box" value="0.00">
+            </div>
+            <div class="form-group">
+              <label>Precio Venta Unidad (S/.)</label>
+              <input type="number" step="0.01" class="input-ctrl" id="p-price-unit" value="0.00">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;">
+              <input type="checkbox" id="p-afecto-igv" checked style="width: 16px; height: 16px; accent-color: var(--p2);"> 
+              ¿Este producto incluye IGV (18%) en el precio de venta?
+            </label>
+          </div>
+        </div>
+        
+        <div id="product-action-button-zone">
+          <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="saveProduct()"><i class="ri-save-line"></i> Registrar Medicamento</button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title"><i class="ri-list-check-2"></i> Listado del Vademécum (Productos Existentes)</div>
+        <div class="table-wrapper" style="max-height:480px; overflow-y:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Forma</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-precios" class="page-section">
+      <div class="section-header">
+        <h1>Asignación y Control de Precios</h1>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title"><i class="ri-money-dollar-circle-line"></i> Matriz de Costos, IGV y Configuración de Precios</div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Costo Caja / Unit</th>
+                <th>¿Aplica IGV (18%)?</th>
+                <th>Precio Venta Caja S/.</th>
+                <th>Precio Venta Unidad S/.</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="prices-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-simulador" class="page-section">
+      <div class="section-header">
+        <h1>Simulador de Pedidos</h1>
+      </div>
+      <div class="pos-grid">
+        <div class="panel-card">
+          <div class="panel-title"><i class="ri-file-add-line"></i> Planificar Compra Simulada</div>
+          <div class="form-group">
+            <label>Medicamento</label>
+            <select class="input-ctrl" id="sim-prod"></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Cantidad a Pedir</label><input type="number" class="input-ctrl" id="sim-qty" value="10"></div>
+            <div class="form-group">
+              <label>Tipo de Unidad</label>
+              <select class="input-ctrl" id="sim-type">
+                <option value="Caja">Cajas Enteras</option>
+                <option value="Unidad">Unidades Sueltas</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addToSimulation()"><i class="ri-add-line"></i> Enlistar en Simulación</button>
+        </div>
+        <div class="panel-card">
+          <div class="panel-title"><i class="ri-draft-line"></i> Pre-orden Generada</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Medicamento</th><th>Pedido</th><th>Vencimiento Real</th><th>Total Est.</th></tr>
+              </thead>
+              <tbody id="simulation-table-body"></tbody>
+            </table>
+          </div>
+          <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+            <button class="btn btn-success" onclick="commitSimulation()"><i class="ri-upload-2-line"></i> Cargar Pedido Simulado a Inventario Real</button>
+            <button class="btn btn-danger" onclick="clearSimulation()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<div class="receipt-backdrop" id="receipt-modal">
+    <div class="receipt-paper">
+        <div class="receipt-header">
+            <!-- Reemplaza "logo-botica.jpg" por la ruta donde guardaste la imagen de tu logo -->
+            <img src="botica.jpg" alt="Botica Villazar" class="receipt-logo">
+            <p style="font-weight: 600; margin-top: 4px;">RUC: 10722570664</p>
+            <p>Calle Las Palmeras D 02A - El Paraíso de Jicamarca</p>
+        </div>
+
+      <div class="receipt-line"></div>
+
+      <div class="receipt-info">
+        <p style="font-weight:700;" id="rec-ticket-num">COMPROBANTE: </p>
+        <p id="rec-date">FECHA: </p>
+        <p id="rec-doc">DNi </p>
+        <p id="rec-cli">CLIENTE: </p>
+        <p id="rec-address">DIRECCIÓN: </p>
+      </div>
+
+      <div class="receipt-line"></div>
+
+      <table class="receipt-table">
+        <thead>
+          <tr>
+            <th style="text-align:left; width: 55%;">DESCRIPCIÓN</th>
+            <th style="text-align:center; width: 15%;">CANT</th>
+            <th style="text-align:right; width: 30%;">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody id="receipt-items-body"></tbody>
+      </table>
+
+      <div class="receipt-line"></div>
+
+      <div class="receipt-totals-row">
+        <span>SUBTOTAL:</span>
+        <span id="rec-sub">S/. 0.00</span>
+      </div>
+      <div class="receipt-totals-row">
+        <span>IGV (18%):</span>
+        <span id="rec-igv">S/. 0.00</span>
+      </div>
+      <div class="receipt-totals-row grand-total">
+        <span>TOTAL A PAGAR:</span>
+        <span id="rec-total">S/. 0.00</span>
+      </div>
+
+      <div class="receipt-line"></div>
+      <p style="text-align:center; font-weight:700; margin-top:6px; font-size: 0.72rem;">¡Gracias por su compra!</p>
+      
+      <div style="text-align:center; margin-top:12px;" class="no-print">
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 6px 12px; font-size: 0.8rem;" onclick="closeReceipt()">Cerrar e Imprimir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="receipt-backdrop" id="edit-inventory-modal">
+    <div class="receipt-paper" style="background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 18px; font-family: inherit; font-size: inherit;">
+      <h3 style="color:#fff; text-align:left; font-family:'Syne';"><i class="ri-edit-box-line"></i> Editar Item Real</h3>
+      <div class="receipt-line" style="border-color: var(--border);"></div>
+      
+      <p style="text-align:left; font-weight:bold; color: var(--c2); margin-bottom: 15px;" id="edit-modal-title">Medicamento</p>
+      <input type="hidden" id="edit-target-lot-id">
+
+      <div id="edit-step-auth" class="edit-auth-box">
+        <div class="form-group">
+          <label style="color:var(--danger);">Código Secreto de Autorización</label>
+          <input type="password" class="input-ctrl" id="edit-auth-secret" placeholder="Ingrese código para desbloquear">
+        </div>
+        <button class="btn btn-danger" style="width:100%; justify-content:center;" onclick="unlockEditFields()">Desbloquear Edición</button>
+      </div>
+
+      <div id="edit-step-fields" style="display:none;">
+        <div class="form-group">
+          <label>Stock Físico Real (Unidades Sueltas)</label>
+          <input type="number" class="input-ctrl" id="edit-new-stock" min="0">
+        </div>
+        <div class="form-group">
+          <label>Nueva Fecha Vencimiento</label>
+          <input type="date" class="input-ctrl" id="edit-new-expiry">
+        </div>
+        <button class="btn btn-success" style="width:100%; justify-content:center; margin-top:10px;" onclick="saveInventoryEdits()">Guardar Cambios en Inventario</button>
+      </div>
+
+      <div style="text-align:center; margin-top:15px;">
+        <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="closeEditModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="receipt-backdrop" id="delete-sale-modal">
+    <div class="receipt-paper" style="background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 18px; font-family: inherit; font-size: inherit;">
+      <h3 style="color:var(--danger); text-align:left; font-family:'Syne';"><i class="ri-git-repository-private-line"></i> Anular Comprobante</h3>
+      <div class="receipt-line" style="border-color: var(--border);"></div>
+    
+      <p style="text-align:left; font-weight:bold; color: #fff; margin-bottom: 15px;" id="delete-modal-ticket-title">Boleta: -</p>
+      <input type="hidden" id="delete-target-index">
+
+      <div id="delete-step-auth" class="edit-auth-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+        <div class="form-group">
+          <label style="color:var(--danger); font-weight: 600;">Código Secreto de Autorización</label>
+          <input type="password" class="input-ctrl" id="delete-auth-secret" placeholder="Ingrese clave de autorización">
+        </div>
+        <button class="btn btn-danger" style="width:100%; justify-content:center; font-weight: 700;" onclick="unlockDeleteFields()">Validar Permisos</button>
+      </div>
+
+      <div id="delete-step-fields" style="display:none;">
+        <div class="form-group">
+          <label style="color:#fff;">Sustento / Motivo de Anulación (Obligatorio)</label>
+          <textarea class="input-ctrl" id="delete-reason" rows="3" placeholder="Ej. ERROR EN TIPO DE DESPACHO / CAMBIO DE PRODUCTO" style="resize: none; font-family: inherit; margin-top: 5px; padding: 10px;"></textarea>
+        </div>
+        <button class="btn btn-success" style="width:100%; justify-content:center; margin-top:10px; font-weight: 700;" onclick="confirmSaleAnulation()">Ejecutar Anulación en Sistema</button>
+      </div>
+
+      <div style="text-align:center; margin-top:15px;">
+        <button class="btn btn-secondary" style="width:100%; justify-content:center;" onclick="closeDeleteModal()">Cancelar / Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// ==========================================
+// 1. CONFIGURACIÓN, BASE DE DATOS Y ARRANQUE
+// ==========================================
+const AUTH = { user: "admin", pass: "admin123", secret: "FARMA777" };
+
+const DB = {
+  get: (key, fallback) => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : fallback;
+    } catch {
+      return fallback;
+    }
+  },
+  set: (key, value) => localStorage.setItem(key, JSON.stringify(value))
+};
+
+function saveEverythingLocally() {}
+
+const initStorage = (key, initialValue) => {
+  if (!localStorage.getItem(key)) DB.set(key, initialValue);
+};
+
+initStorage('f_cats', ['Analgésicos', 'Antibióticos', 'Antiinflamatorios', 'Vitaminas']);
+initStorage('f_formas', ['Tab', 'Jarabe', 'Ampolla', 'Cápsula']);
+initStorage('f_prods', [
+  { id: "PROD-001", desc: "Amoxicilina 500mg", boxUnits: 100, blisterUnits: 10, cat: "Antibióticos", forma: "Cápsula", barcode: "7750123456789", cost: 15.00, costMode: "Caja", priceBox: 35.00, priceUnit: 0.40, useIgv: true },
+  { id: "PROD-002", desc: "Paracetamol 500mg Genérico", boxUnits: 100, blisterUnits: 10, cat: "Analgésicos", forma: "Tab", barcode: "7750987654321", cost: 5.00, costMode: "Caja", priceBox: 12.00, priceUnit: 0.15, useIgv: false }
+]);
+initStorage('f_lots', [
+  { id: "L-001", prodId: "PROD-001", code: "LOT-AMX26", expiry: "2026-06-25", stockUnits: 1500 }, 
+  { id: "L-002", prodId: "PROD-002", code: "LOT-PAR99", expiry: "2026-08-15", stockUnits: 4000 }  
+]);
+initStorage('f_sim', []);
+initStorage('f_sales', []);
+initStorage('f_silenced_alerts', []);
+
+let cart = [];
+let selectedPaymentMethod = 'efectivo'; // Estado por defecto
+
+function setPaymentMethod(method) {
+  selectedPaymentMethod = method;
+  const btnEfectivo = document.getElementById('btn-pay-efectivo');
+  const btnYape = document.getElementById('btn-pay-yape');
+  
+  if (btnEfectivo && btnYape) {
+    if (method === 'efectivo') {
+      btnEfectivo.classList.add('active');
+      btnYape.classList.remove('active');
+    } else {
+      btnYape.classList.add('active');
+      btnEfectivo.classList.remove('active');
+    }
+  }
+}
+
+window.onload = function() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayString = `${year}-${month}-${day}`;
+
+  const startEl = document.getElementById('search-sale-start-date');
+  const endEl = document.getElementById('search-sale-end-date');
+  
+  if (startEl && endEl) {
+    startEl.value = todayString;
+    endEl.value = todayString;
+  }
+  
+  if (sessionStorage.getItem('f_logged') === 'true') {
+    document.body.classList.add('authenticated');
+    initSystem();
+  }
+};
+
+document.addEventListener('click', function(e) {
+  const posBox = document.getElementById('search-box');
+  const ingBox = document.getElementById('ing-search-box');
+  const catBox = document.getElementById('catalog-search-box');
+  
+  if (posBox && e.target.id !== 'pos-search') posBox.style.display = 'none';
+  if (ingBox && e.target.id !== 'ing-search-input') ingBox.style.display = 'none';
+  if (catBox && e.target.id !== 'catalog-search-input') catBox.style.display = 'none';
+});
+
+// ==========================================
+// 2. SEGURIDAD Y ACCESO (LOGIN)
+// ==========================================
+function validateLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  const s = document.getElementById('login-secret').value.trim();
+  const err = document.getElementById('login-error-msg');
+
+  if(u === AUTH.user && p === AUTH.pass && s === AUTH.secret) {
+    if (err) err.style.display = 'none';
+    sessionStorage.setItem('f_logged', 'true');
+    document.body.classList.add('authenticated');
+    initSystem();
+  } else {
+    if (err) err.style.display = 'block';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('f_logged');
+  document.body.classList.remove('authenticated');
+}
+
+function switchSection(secId, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar .menu-btn').forEach(b => b.classList.remove('active'));
+  
+  const targetSec = document.getElementById('sec-' + secId);
+  if (targetSec) targetSec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  
+  initSystem();
+}
+
+function initSystem() {
+  renderDropdowns();
+  renderCatalog();
+  renderInventory();
+  renderRealInventory();
+  renderPricesTable();
+  renderSimulation();
+  renderSalesHistory();
+}
+
+// ==========================================
+// 3. MÓDULO POS: BUSCADOR Y VENTAS
+// ==========================================
+// ==========================================
+// BÚSQUEDA Y CONTROL DE STOCK CORREGIDOS (POS)
+// ==========================================
+
+// Función auxiliar para calcular el stock real suma de todos los lotes
+function getRealStockForProduct(productId) {
+  const lots = DB.get('f_lots', []);
+  return lots
+    .filter(l => l.prodId === productId)
+    .reduce((sum, l) => sum + (parseInt(l.stockUnits) || 0), 0);
+}
+
+function handleSearch(val) {
+  const q = val.toLowerCase().trim();
+  const prods = DB.get('f_prods', []);
+  const sugBox = document.getElementById('search-box');
+
+  if (!sugBox) return;
+
+  if (!q) {
+    sugBox.style.display = 'none';
+    return;
+  }
+
+  // Filtrar por nombre o código de barras
+  const filtered = prods.filter(p => 
+    (p.desc && p.desc.toLowerCase().includes(q)) || 
+    (p.barcode && p.barcode.toLowerCase().includes(q))
+  );
+
+  sugBox.innerHTML = '';
+
+  if (filtered.length === 0) {
+    sugBox.style.display = 'none';
+    return;
+  }
+
+  filtered.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'predictive-item';
+    
+    // CORRECCIÓN: Calcular el stock real sumando las unidades de los lotes activos (f_lots)
+    const stock = getRealStockForProduct(p.id);
+
+    const precio = (p.priceUnit || p.priceBox || 0).toFixed(2);
+    const codeInfo = p.barcode ? ` <small style="color: #888;">(${p.barcode})</small>` : '';
+
+    let stockBadge = '';
+    const isOut = stock <= 0;
+
+    // Mostrar el stock real o la etiqueta de Agotado
+    if (isOut) {
+      stockBadge = `<span style="background: rgba(239, 68, 68, 0.2); color: #ff8080; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid rgba(239, 68, 68, 0.4);">Agotado (0 uds)</span>`;
+      item.style.opacity = '0.55';
+      item.style.cursor = 'not-allowed';
+    } else {
+      stockBadge = `<span style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid rgba(16, 185, 129, 0.4);">Stock: ${stock} uds</span>`;
+      item.style.cursor = 'pointer';
+    }
+
+    item.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div>
+          <strong style="color: #fff;">${p.desc}</strong> ${codeInfo}
+          <div style="margin-top: 4px;">${stockBadge}</div>
+        </div>
+        <div style="font-weight: bold; color: var(--p2); font-size: 14px;">
+          S/. ${precio}
+        </div>
+      </div>
+    `;
+    
+    // CONDICIÓN Y BLOQUEO DE SELECCIÓN
+    item.onclick = () => {
+      if (isOut) {
+        alert('❌ No puedes seleccionar este producto porque se encuentra agotado.');
+        return; 
+      }
+
+      selectProductToConfigure(p.id);
+      sugBox.style.display = 'none';
+      document.getElementById('pos-search').value = '';
+    };
+
+    sugBox.appendChild(item);
+  });
+
+  sugBox.style.display = 'block';
+}
+
+function handleSearchKeyPress(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    
+    const query = event.target.value.toLowerCase().trim();
+    if (!query) return;
+
+    const prods = DB.get('f_prods', []);
+
+    const match = prods.find(p => 
+      (p.barcode && p.barcode.toLowerCase() === query) || 
+      (p.desc && p.desc.toLowerCase() === query)
+    );
+
+    if (match) {
+      // CORRECCIÓN: Obtención de stock real
+      const stock = getRealStockForProduct(match.id);
+
+      if (stock <= 0) {
+        alert('❌ El producto está AGOTADO (0 unidades en stock). No se puede agregar a la venta.');
+        return;
+      }
+
+      const sugBox = document.getElementById('search-box');
+      if (sugBox) sugBox.style.display = 'none';
+      
+      selectProductToConfigure(match.id);
+      event.target.value = '';
+    } else {
+      alert('⚠️ Producto o código de barras no encontrado.');
+    }
+  }
+}
+
+function selectProductToConfigure(pid) {
+  if (document.getElementById('search-box')) document.getElementById('search-box').style.display = 'none';
+  if (document.getElementById('pos-search')) document.getElementById('pos-search').value = '';
+
+  const prods = DB.get('f_prods', []);
+  const p = prods.find(x => x.id === pid);
+  if(!p) return;
+
+  if (document.getElementById('pre-id')) document.getElementById('pre-id').value = p.id;
+  if (document.getElementById('pre-title')) document.getElementById('pre-title').innerText = `Configurar Despacho: ${p.desc}`;
+  if (document.getElementById('pre-mode')) document.getElementById('pre-mode').value = 'Unidad';
+  if (document.getElementById('pre-price')) document.getElementById('pre-price').value = p.priceUnit || 0;
+  if (document.getElementById('pre-qty')) document.getElementById('pre-qty').value = "1";
+
+  if (document.getElementById('pre-add-panel')) document.getElementById('pre-add-panel').style.display = 'block';
+}
+
+function updatePrePrice() {
+  const pid = document.getElementById('pre-id') ? document.getElementById('pre-id').value : '';
+  const mode = document.getElementById('pre-mode') ? document.getElementById('pre-mode').value : 'Unidad';
+  
+  const prods = DB.get('f_prods', []);
+  const p = prods.find(x => x.id === pid);
+  if(!p) return;
+
+  const priceEl = document.getElementById('pre-price');
+  if (!priceEl) return;
+
+  const priceBox = parseFloat(p.priceBox) || 0;
+  const priceUnit = parseFloat(p.priceUnit) || 0;
+  const boxUnits = Math.max(parseInt(p.boxUnits) || 1, 1);
+  const blisterUnits = Math.max(parseInt(p.blisterUnits) || 1, 1);
+
+  if(mode === 'Caja') {
+    priceEl.value = priceBox.toFixed(2);
+  } else if(mode === 'Blíster') {
+    const calculatedBlisterPrice = (priceBox / boxUnits) * blisterUnits;
+    priceEl.value = (calculatedBlisterPrice || (priceUnit * blisterUnits)).toFixed(2);
+  } else {
+    priceEl.value = priceUnit.toFixed(2);
+  }
+}
+
+function confirmAddToCart() {
+  const pid = document.getElementById('pre-id') ? document.getElementById('pre-id').value : '';
+  const mode = document.getElementById('pre-mode') ? document.getElementById('pre-mode').value : 'Unidad';
+  const price = parseFloat(document.getElementById('pre-price') ? document.getElementById('pre-price').value : '0') || 0;
+  const qty = parseInt(document.getElementById('pre-qty') ? document.getElementById('pre-qty').value : '1') || 1;
+
+  const prods = DB.get('f_prods', []);
+  const p = prods.find(x => x.id === pid);
+  if(!p) return;
+
+  cart.push({
+    id: p.id,
+    desc: p.desc,
+    mode: mode,
+    customPrice: price,
+    qty: qty
+  });
+
+  if (document.getElementById('pre-add-panel')) document.getElementById('pre-add-panel').style.display = 'none';
+  renderCart();
+}
+
+function removeCartItem(index) {
+  cart.splice(index, 1);
+  renderCart();
+}
+
+function renderCart() {
+  const tbody = document.getElementById('cart-table-body');
+  if(!tbody) return;
+
+  if(cart.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">La lista está vacía. Seleccione un producto arriba y agréguelo.</td></tr>`;
+    calculateTotals();
+    return;
+  }
+
+  tbody.innerHTML = cart.map((item, index) => `
+    <tr>
+      <td><strong>${item.desc}</strong></td>
+      <td><span class="badge badge-purple">${item.mode}</span></td>
+      <td>S/. ${item.customPrice.toFixed(2)}</td>
+      <td><strong>${item.qty}</strong></td>
+      <td><span style="color:#fff; font-weight:600;">S/. ${(item.customPrice * item.qty).toFixed(2)}</span></td>
+      <td><button class="btn btn-danger" style="padding:4px 8px;" onclick="removeCartItem(${index})"><i class="ri-delete-bin-line"></i></button></td>
+    </tr>
+  `).join('');
+
+  calculateTotals();
+}
+
+function calculateTotals() {
+  let total = 0;
+  cart.forEach(item => { total += (item.customPrice * item.qty); });
+  const igv = total * 0.18;
+  const subtotal = total - igv;
+
+  if (document.getElementById('tot-sub')) document.getElementById('tot-sub').innerText = "S/. " + subtotal.toFixed(2);
+  if (document.getElementById('tot-igv')) document.getElementById('tot-igv').innerText = "S/. " + igv.toFixed(2);
+  if (document.getElementById('tot-final')) document.getElementById('tot-final').innerText = "S/. " + total.toFixed(2);
+}
+
+function handleDocTypeChange() {
+  const type = document.getElementById('sale-doc-type').value;
+  const lblDoc = document.getElementById('lbl-cli-doc');
+  const lblName = document.getElementById('lbl-cli-name');
+  
+  if (type === 'FACTURA') {
+    if (lblDoc) lblDoc.innerText = "RUC de la Empresa";
+    if (lblName) lblName.innerText = "Razón Social";
+  } else {
+    if (lblDoc) lblDoc.innerText = "DNI del Cliente";
+    if (lblName) lblName.innerText = "Nombres y Apellidos";
+  }
+}
+
+function processSale() {
+  const tableBody = document.getElementById("cart-table-body");
+  if(!tableBody) return;
+  
+  if (cart.length === 0) {
+    alert("⚠️ No hay productos en la lista para facturar.");
+    return;
+  }
+
+  const saleDocType = document.getElementById('sale-doc-type') ? document.getElementById('sale-doc-type').value : 'BOLETA';
+  const clientDoc = (document.getElementById("cli-doc") ? document.getElementById("cli-doc").value.trim() : "") || "S/D";
+  const clientName = (document.getElementById("cli-name") ? document.getElementById("cli-name").value.trim() : "") || "PÚBLICO GENERAL";
+  const clientAddress = (document.getElementById("cli-address") ? document.getElementById("cli-address").value.trim() : "") || "S/D";
+  const totalFinal = document.getElementById("tot-final") ? document.getElementById("tot-final").innerText : "S/. 0.00";
+  const subtotalFinal = document.getElementById("tot-sub") ? document.getElementById("tot-sub").innerText : "S/. 0.00";
+  const igvFinal = document.getElementById("tot-igv") ? document.getElementById("tot-igv").innerText : "S/. 0.00";
+  
+  if (saleDocType === 'FACTURA') {
+    if (clientDoc.length !== 11) {
+      alert("⚠️ Para una Factura, el RUC debe tener obligatoriamente 11 dígitos.");
+      return;
+    }
+    if (clientName === "PÚBLICO GENERAL" || !clientName || clientAddress === "S/D" || !clientAddress) {
+      alert("⚠️ Para emitir una Factura es obligatorio colocar la Razón Social y la Dirección Fiscal de la empresa.");
+      return;
+    }
+  }
+
+  const prefix = saleDocType === 'FACTURA' ? 'F001-' : 'B001-';
+  const ticketNum = prefix + Math.floor(100000 + Math.random() * 900000);
+  
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  // Extrae el año, mes y día respetando la HORA LOCAL del equipo (no la UTC)
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
+
+  let prods = DB.get('f_prods', []);
+  let lots = DB.get('f_lots', []);
+  let itemsSummary = [];
+  
+  cart.forEach(item => {
+    const pBase = prods.find(x => x.id === item.id);
+    let unidadesARestar = item.qty;
+
+    if (pBase) {
+      if (item.mode === "Caja") {
+        unidadesARestar = item.qty * (parseInt(pBase.boxUnits) || 100);
+      } else if (item.mode === "Blíster") {
+        unidadesARestar = item.qty * (parseInt(pBase.blisterUnits) || 10);
+      }
+    }
+
+    let costoUnitarioLote = 0;
+    if (pBase) {
+      if (pBase.costMode === "Caja") {
+        costoUnitarioLote = (parseFloat(pBase.cost) || 0) / (parseInt(pBase.boxUnits) || 100);
+      } else {
+        costoUnitarioLote = parseFloat(pBase.cost) || 0;
+      }
+    }
+
+    let stockRestante = unidadesARestar;
+    for (let i = 0; i < lots.length; i++) {
+      if (lots[i].prodId === item.id && lots[i].stockUnits > 0) {
+        if (lots[i].cost) {
+          if (lots[i].costMode === "Caja" && pBase) {
+            costoUnitarioLote = (parseFloat(lots[i].cost) || 0) / (parseInt(pBase.boxUnits) || 100);
+          } else {
+            costoUnitarioLote = parseFloat(lots[i].cost) || 0;
+          }
+        }
+
+        if (lots[i].stockUnits >= stockRestante) {
+          lots[i].stockUnits -= stockRestante;
+          stockRestante = 0;
+          break;
+        } else {
+          stockRestante -= lots[i].stockUnits;
+          lots[i].stockUnits = 0;
+        }
+      }
+    }
+
+    let costoTotalItem = costoUnitarioLote * unidadesARestar;
+    let precioTotalItem = item.customPrice * item.qty;
+    let gananciaItem = precioTotalItem - costoTotalItem;
+
+    itemsSummary.push({
+      id: item.id, 
+      name: item.desc,
+      mode: item.mode,
+      price: "S/. " + item.customPrice.toFixed(2),
+      qty: item.qty,
+      subtotal: "S/. " + precioTotalItem.toFixed(2),
+      costoTotal: costoTotalItem,
+      gananciaNeta: gananciaItem
+    });
+  });
+
+  DB.set('f_lots', lots);
+
+  const newSale = {
+    ticket: ticketNum,
+    tipoComprobante: saleDocType,
+    date: dateStr,
+    time: timeStr,
+    doc: clientDoc,
+    client: clientName,
+    address: clientAddress,
+    items: itemsSummary,
+    subtotal: subtotalFinal,
+    igv: igvFinal,
+    total: totalFinal,
+    metodoPago: selectedPaymentMethod,
+    estado: "ACTIVA"
+  };
+
+  let salesHistory = DB.get('f_sales', []);
+  salesHistory.push(newSale);
+  DB.set('f_sales', salesHistory);
+
+  alert(`✅ Venta Grabada con Éxito. ¡Stock descontado!\n${saleDocType}: ${ticketNum}`);
+
+  if (confirm(`¿Desea imprimir la ${saleDocType.toLowerCase()} de esta venta ahora?`)) {
+    openReceiptModalDirect(newSale);
+  }
+
+  cart = [];
+  if (document.getElementById('sale-doc-type')) document.getElementById('sale-doc-type').value = 'BOLETA';
+  if (document.getElementById("cli-doc")) document.getElementById("cli-doc").value = "";
+  if (document.getElementById("cli-name")) document.getElementById("cli-name").value = "";
+  if (document.getElementById("cli-address")) document.getElementById("cli-address").value = "";
+
+  setPaymentMethod('efectivo');
+  handleDocTypeChange();
+  
+  tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">La lista está vacía. Seleccione un producto arriba y agréguelo.</td></tr>`;
+  if (document.getElementById("tot-sub")) document.getElementById("tot-sub").innerText = "S/. 0.00";
+  if (document.getElementById("tot-igv")) document.getElementById("tot-igv").innerText = "S/. 0.00";
+  if (document.getElementById("tot-final")) document.getElementById("tot-final").innerText = "S/. 0.00";
+  
+  initSystem();
+}
+
+function openReceiptModalDirect(sale) {
+  const modal = document.getElementById("receipt-modal");
+  if (!modal) return;
+
+  // Llenado de datos (mantén el código existente)...
+  document.getElementById("rec-ticket-num").innerText = `${sale.tipoComprobante || 'BOLETA'}: ${sale.ticket}`;
+  document.getElementById("rec-date").innerText = `FECHA: ${sale.date} ${sale.time}`;
+  document.getElementById("rec-doc").innerText = `${sale.tipoComprobante === 'FACTURA' ? 'RUC' : 'DNI/RUC'}: ${sale.doc || 'S/D'}`;
+  document.getElementById("rec-cli").innerText = `CLIENTE: ${sale.client || 'PÚBLICO GENERAL'}`;
+  document.getElementById("rec-address").innerText = `DIR: ${sale.address || 'S/D'}`;
+
+  const recItems = document.getElementById("receipt-items-body");
+  recItems.innerHTML = "";
+  // Dentro de openReceiptModalDirect(), al agregar los productos:
+    sale.items.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="text-align:left; font-weight:500; color:#050b30;">
+            ${item.name || "Producto"}<br>
+            <small style="color:#1b2a60; font-size: 0.65rem;">${item.mode || 'U'} -> ${item.price}</small>
+            </td>
+            <td style="text-align:center; font-weight:700; color:#050b30;">${item.qty}</td>
+            <td style="text-align:right; font-weight:700; color:#050b30;">${item.subtotal || '0.00'}</td>
+        `;
+        recItems.appendChild(tr);
+    });
+
+  document.getElementById("rec-sub").innerText = sale.subtotal || "S/. 0.00";
+  document.getElementById("rec-igv").innerText = sale.igv || "S/. 0.00";
+  document.getElementById("rec-total").innerText = sale.total;
+
+  // Mover el modal al inicio del <body> para evitar alturas residuales de otros divs
+  document.body.appendChild(modal);
+  modal.style.display = "flex";
+
+  setTimeout(() => { 
+    window.print(); 
+  }, 300);
+}
+
+function closeReceipt() {
+  if (document.getElementById('receipt-modal')) document.getElementById('receipt-modal').style.display = 'none';
+  cart = [];
+  renderCart();
+  initSystem();
+}
+
+// ==========================================
+// 4. HISTORIAL Y ARQUEO DE CAJA
+// ==========================================
+function renderSalesHistory() {
+  const historyBody = document.getElementById("sales-history-body");
+  if (!historyBody) return;
+
+  const startEl = document.getElementById("search-sale-start-date");
+  const endEl = document.getElementById("search-sale-end-date");
+  
+  let startDate = startEl ? startEl.value : "";
+  let endDate = endEl ? endEl.value : "";
+
+  const closureLabel = document.getElementById("closure-date-label");
+  if (closureLabel) {
+    closureLabel.innerText = (startDate === endDate) 
+      ? "Fecha de Arqueo: " + (startDate || "No seleccionada")
+      : `Rango de Arqueo: desde ${startDate} hasta ${endDate}`;
+  }
+
+  let salesHistory = DB.get('f_sales', []);
+  let prods = DB.get('f_prods', []);
+
+  const closureTotalAmountEl = document.getElementById("closure-total-amount");
+
+  if (salesHistory.length === 0 || !startDate || !endDate) {
+    historyBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">Seleccione un rango de fechas para ver el historial.</td></tr>`;
+    if (closureTotalAmountEl) {
+      closureTotalAmountEl.innerHTML = `<span style="color:var(--muted);">S/. 0.00</span>`;
+    }
+    return;
+  }
+
+  historyBody.innerHTML = "";
+  let totalVentasActivas = 0;
+  let totalVentasEliminadas = 0;
+  let totalMargenGanancia = 0;
+  let totalEfectivo = 0;
+  let totalAplicativo = 0;
+  let hasSales = false;
+
+  salesHistory.forEach((sale, index) => {
+    if (sale.date >= startDate && sale.date <= endDate) {
+      hasSales = true;
+      const numPrice = parseFloat(sale.total.replace("S/.", "").replace("S/", "").trim()) || 0;
+      const esEliminada = sale.estado === "ELIMINADA";
+      const metodo = sale.metodoPago || "efectivo";
+
+      if (esEliminada) {
+        totalVentasEliminadas += numPrice;
+      } else {
+        totalVentasActivas += numPrice;
+
+        if (metodo === "yape" || metodo === "aplicativo") {
+          totalAplicativo += numPrice;
+        } else {
+          totalEfectivo += numPrice;
+        }
+
+        if (sale.items && Array.isArray(sale.items)) {
+          sale.items.forEach(item => {
+            let qtyVendida = parseInt(item.qty) || 1;
+            let modoVenta = item.mode || "Unidad";
+            let precioVentaUnitarioCobrado = 0;
+            
+            if (item.price) {
+              precioVentaUnitarioCobrado = parseFloat(String(item.price).replace("S/.", "").replace("S/", "").trim()) || 0;
+            }
+
+            let ventaTotalReal = precioVentaUnitarioCobrado * qtyVendida;
+            let itemCostTotal = 0;
+            const pBase = prods.find(x => x.id === item.id);
+
+            if (pBase) {
+              let costoCajaLista = parseFloat(pBase.cost) || 0;
+              let unidadesPorCaja = parseInt(pBase.boxUnits) || 1;
+              let unidadesPorBlister = parseInt(pBase.blisterUnits) || 10;
+              let costoPorUnidadBase = costoCajaLista / unidadesPorCaja;
+
+              if (modoVenta === "Caja") {
+                itemCostTotal = (costoPorUnidadBase * unidadesPorCaja) * qtyVendida;
+              } else if (modoVenta === "Blíster") {
+                itemCostTotal = (costoPorUnidadBase * unidadesPorBlister) * qtyVendida;
+              } else {
+                itemCostTotal = costoPorUnidadBase * qtyVendida;
+              }
+            }
+            totalMargenGanancia += (ventaTotalReal - itemCostTotal);
+          });
+        }
+      }
+
+      let productsHtml = sale.items.map(it => `• ${it.name || 'Fármaco'} (${it.qty} ${it.mode})`).join("<br>");
+      if (esEliminada && sale.motivoAnulacion) {
+        productsHtml += `<br><span style="color:#ffb3b3; font-size:0.75rem; display:block; margin-top:4px;">❌ <strong>Motivo:</strong> ${sale.motivoAnulacion}</span>`;
+      }
+
+      const tr = document.createElement("tr");
+      if (esEliminada) {
+        tr.style.background = "rgba(239, 68, 68, 0.15)";
+        tr.style.borderLeft = "4px solid var(--danger)";
+      }
+
+      const badgeMetodo = (metodo === 'yape' || metodo === 'aplicativo')
+        ? '<span class="badge" style="background:rgba(0,213,255,0.15); color:#00d5ff; border:1px solid rgba(0,213,255,0.3); margin-top:3px;">📱 Yape/Plin</span>'
+        : '<span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); margin-top:3px;">💵 Efectivo</span>';
+
+      tr.innerHTML = `
+        <td>
+          <strong style="${esEliminada ? 'text-decoration: line-through; color: var(--danger);' : ''}">${sale.ticket}</strong><br>
+          ${badgeMetodo}
+        </td>
+        <td>${sale.date}<br><small style="color:var(--muted);">${sale.time}</small></td>
+        <td><strong>${sale.client}</strong></td>
+        <td style="font-size:0.8rem; color:#dcd7f5;">${productsHtml}</td>
+        <td><span style="font-weight:700; color: ${esEliminada ? 'var(--danger)' : 'var(--success)'};">${esEliminada ? '- ' : ''}${sale.total}</span></td>
+        <td>
+          <div style="display: flex; gap: 4px;">
+            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="reprintOldSaleByIndex(${index})"><i class="ri-printer-line"></i></button>
+            ${!esEliminada ? `
+              <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem; background: rgba(239, 68, 68, 0.2);" onclick="anularVentaVillasar(${index})"><i class="ri-delete-bin-line"></i></button>
+            ` : `<span class="badge badge-alert-roja" style="font-size:0.7rem;">ANULADA</span>`}
+          </div>
+        </td>
+      `;
+      historyBody.appendChild(tr);
+    }
+  });
+
+  if (!hasSales) {
+    historyBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">No se encontraron ventas para el rango seleccionado.</td></tr>`;
+    if (closureTotalAmountEl) closureTotalAmountEl.innerHTML = `<span style="color:var(--muted);">S/. 0.00</span>`;
+  } else {
+    if (closureTotalAmountEl) {
+      closureTotalAmountEl.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 10px; text-align: left;">
+          <div style="background: rgba(16, 185, 129, 0.12); padding: 12px; border-radius: 8px; border-left: 4px solid var(--success);">
+            <span style="font-size:0.75rem; color:#a1a1aa; display:block; font-weight:600;">💵 EFECTIVO EN CAJA</span>
+            <span style="font-size:1.2rem; font-weight:800; color:var(--success);">S/. ${totalEfectivo.toFixed(2)}</span>
+          </div>
+          <div style="background: rgba(0, 213, 255, 0.12); padding: 12px; border-radius: 8px; border-left: 4px solid #00d5ff;">
+            <span style="font-size:0.75rem; color:#a1a1aa; display:block; font-weight:600;">📱 YAPE / APLICATIVO</span>
+            <span style="font-size:1.2rem; font-weight:800; color:#00d5ff;">S/. ${totalAplicativo.toFixed(2)}</span>
+          </div>
+          <div style="background: rgba(168, 85, 247, 0.12); padding: 12px; border-radius: 8px; border-left: 4px solid var(--p3);">
+            <span style="font-size:0.75rem; color:#a1a1aa; display:block; font-weight:600;">💰 VENTAS NETAS TOTALES</span>
+            <span style="font-size:1.2rem; font-weight:800; color:var(--p3);">S/. ${totalVentasActivas.toFixed(2)}</span>
+          </div>
+          <div style="background: rgba(239, 68, 68, 0.12); padding: 12px; border-radius: 8px; border-left: 4px solid var(--danger);">
+            <span style="font-size:0.75rem; color:#a1a1aa; display:block; font-weight:600;">❌ ANULADOS</span>
+            <span style="font-size:1.2rem; font-weight:800; color:var(--danger);">S/. ${totalVentasEliminadas.toFixed(2)}</span>
+          </div>
+          <div style="background: rgba(245, 158, 11, 0.12); padding: 12px; border-radius: 8px; border-left: 4px solid var(--warning);">
+            <span style="font-size:0.75rem; color:#a1a1aa; display:block; font-weight:600;">📈 MARGEN ESTIMADO</span>
+            <span style="font-size:1.2rem; font-weight:800; color:var(--warning);">S/. ${totalMargenGanancia.toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+function reprintOldSaleByIndex(index) {
+  let salesHistory = DB.get('f_sales', []);
+  const selectedSale = salesHistory[index];
+  if (selectedSale) openReceiptModalDirect(selectedSale);
+}
+
+function anularVentaVillasar(index) {
+  let salesHistory = DB.get('f_sales', []);
+  const sale = salesHistory[index];
+  if (!sale) return;
+
+  if (document.getElementById("delete-target-index")) document.getElementById("delete-target-index").value = index;
+  if (document.getElementById("delete-modal-ticket-title")) document.getElementById("delete-modal-ticket-title").innerText = `⚠️ ¿Anular Comprobante ${sale.ticket}?`;
+  if (document.getElementById("delete-auth-secret")) document.getElementById("delete-auth-secret").value = "";
+  
+  if (document.getElementById("delete-step-auth")) document.getElementById("delete-step-auth").style.display = "block";
+  if (document.getElementById("delete-step-fields")) document.getElementById("delete-step-fields").style.display = "none";
+  if (document.getElementById("delete-sale-modal")) document.getElementById("delete-sale-modal").style.display = "flex";
+}
+
+function unlockDeleteFields() {
+  const codeInput = document.getElementById('delete-auth-secret').value;
+  if (codeInput === AUTH.secret) {
+    document.getElementById("delete-step-auth").style.display = "none";
+    document.getElementById("delete-step-fields").style.display = "block";
+  } else {
+    alert("🔒 Código de autorización incorrecto.");
+  }
+}
+
+function confirmSaleAnulation() {
+  const index = parseInt(document.getElementById("delete-target-index").value);
+  const reason = document.getElementById("delete-reason").value.trim();
+
+  if (!reason) {
+    alert("⚠️ Debe registrar un motivo de anulación válido.");
+    return;
+  }
+
+  let salesHistory = DB.get('f_sales', []);
+  if (salesHistory[index]) {
+    salesHistory[index].estado = "ELIMINADA";
+    salesHistory[index].motivoAnulacion = reason;
+    DB.set('f_sales', salesHistory);
+    alert("✅ Comprobante marcado como anulado en sistema.");
+    closeDeleteModal();
+    initSystem();
+  }
+}
+
+function closeDeleteModal() {
+  if (document.getElementById("delete-sale-modal")) document.getElementById("delete-sale-modal").style.display = "none";
+}
+
+// ==========================================
+// 5. GESTIÓN ALMACÉN & INGRESOS
+// ==========================================
+function handleIngressSearch(val) {
+  const box = document.getElementById('ing-search-box');
+  if (!box) return;
+  if (!val.trim()) { box.style.display = 'none'; return; }
+
+  const prods = DB.get('f_prods', []);
+  const query = val.toLowerCase();
+  const filtered = prods.filter(p => p.desc.toLowerCase().includes(query) || (p.barcode && p.barcode.includes(query)));
+
+  if (filtered.length === 0) {
+    box.innerHTML = `<div class="predictive-item" style="color:var(--muted); padding:10px;">Sin coincidencias en catálogo...</div>`;
+  } else {
+    box.innerHTML = filtered.map(p => `
+      <div class="predictive-item" onclick="selectProductToIngress('${p.id}', '${p.desc.replace(/'/g, "\\'")}')" style="padding:10px; cursor:pointer;">
+        <span style="font-weight:600; color:#fff;">${p.desc}</span> 
+        <span style="float:right;" class="badge badge-purple">${p.forma}</span>
+      </div>
+    `).join('');
+  }
+  box.style.display = 'block';
+}
+
+function selectProductToIngress(pid, pdesc) {
+  if (document.getElementById('ing-search-box')) document.getElementById('ing-search-box').style.display = 'none';
+  if (document.getElementById('ing-search-input')) document.getElementById('ing-search-input').value = pdesc;
+  if (document.getElementById('ing-prod')) document.getElementById('ing-prod').value = pid;
+  if (document.getElementById('ing-selected-feedback')) document.getElementById('ing-selected-feedback').innerText = `📦 Listo para ingresar: ${pdesc}`;
+  updateIngressoPrecios();
+}
+
+function updateIngressoPrecios() {
+  const pid = document.getElementById('ing-prod').value;
+  const prods = DB.get('f_prods', []);
+  const p = prods.find(item => item.id === pid);
+  if(p) {
+    if (document.getElementById('ing-cost')) document.getElementById('ing-cost').value = p.cost || '';
+    if (document.getElementById('ing-cost-mode')) document.getElementById('ing-cost-mode').value = p.costMode || 'Caja';
+  }
+}
+
+function executeIngress() {
+  const pid = document.getElementById('ing-prod').value;
+  const qty = parseInt(document.getElementById('ing-qty').value) || 0;
+  const unitType = document.getElementById('ing-unit-type').value; 
+  const lot = "LOTE-VILLAZAR";
+  const expiry = document.getElementById('ing-expiry').value;
+  const cost = parseFloat(document.getElementById('ing-cost').value) || 0;
+  const costMode = document.getElementById('ing-cost-mode').value;
+
+  if(!pid) { alert("Por favor use el buscador y seleccione un medicamento válido."); return; }
+  if(qty <= 0) { alert("Ingrese cantidad válida"); return; }
+  if(!expiry) { alert("Por favor, asigne una Fecha de Vencimiento."); return; }
+
+  const prods = DB.get('f_prods', []);
+  const pIndex = prods.findIndex(x => x.id === pid);
+  if(pIndex === -1) return;
+
+  let finalUnits = qty;
+  if (unitType === "Caja") finalUnits = qty * prods[pIndex].boxUnits;
+
+  prods[pIndex].cost = cost;
+  prods[pIndex].costMode = costMode;
+  DB.set('f_prods', prods);
+
+  let lots = DB.get('f_lots', []);
+  let existingLot = lots.find(l => l.prodId === pid && l.code.toUpperCase() === lot.toUpperCase());
+
+  if (existingLot) {
+    existingLot.stockUnits += finalUnits;
+    existingLot.expiry = expiry; 
+  } else {
+    lots.push({
+      id: "L-" + Date.now() + Math.floor(Math.random()*100),
+      prodId: pid,
+      code: lot.toUpperCase(),
+      expiry: expiry,
+      stockUnits: finalUnits
+    });
+  }
+  
+  DB.set('f_lots', lots);
+  alert(`✅ Mercadería procesada e integrada al lote único: ${lot}`);
+  
+  document.getElementById('ing-search-input').value = '';
+  document.getElementById('ing-prod').value = '';
+  document.getElementById('ing-selected-feedback').innerText = '';
+  document.getElementById('ing-expiry').value = '';
+  initSystem();
+}
+
+// =========================================================================
+// 6. KÁRDEX, BUSCADOR POR TIPO (NOMBRE / CATEGORÍA) & ALERTAS VENCIMIENTO
+// =========================================================================
+
+// FUNCIÓN CLAVE: Intercambia el campo de entrada entre texto (Nombre) o menú (Categoría)
+function toggleInventorySearchType() {
+  const type = document.getElementById('inv-search-type').value;
+  const container = document.getElementById('inv-search-field-container');
+  if (!container) return;
+
+  if (type === 'categoria') {
+    const cats = DB.get('f_cats', []);
+    let optionsHtml = `<option value="">-- Seleccione una Categoría para Filtrar --</option>`;
+    cats.forEach(c => {
+      optionsHtml += `<option value="${c}">${c}</option>`;
+    });
+    container.innerHTML = `<select id="inv-search-cat" class="input-ctrl" onchange="renderRealInventory()">${optionsHtml}</select>`;
+  } else {
+    container.innerHTML = `<input type="text" class="input-ctrl" id="inv-search" placeholder="Escriba el nombre del producto en stock..." oninput="renderRealInventory()">`;
+  }
+  renderRealInventory();
+}
+
+function checkExpiryStatus(expiryDateStr, lotId) {
+  const silenced = DB.get('f_silenced_alerts', []);
+  if (silenced.includes(lotId)) {
+    return { styleClass: '', badge: '<span class="badge badge-secondary">Apagada</span>', hasAlert: false };
+  }
+  if (!expiryDateStr || expiryDateStr === 'S/V') {
+    return { styleClass: '', badge: '—', hasAlert: false };
+  }
+
+  const today = new Date();
+  const expiry = new Date(expiryDateStr);
+  const timeDiff = expiry.getTime() - today.getTime();
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  if (daysDiff <= 90) {
+    return { styleClass: 'alert-row-roja', badge: '<span class="badge badge-alert-roja">⚠️ Alerta Roja (&lt;3 Meses)</span>', hasAlert: true };
+  } else if (daysDiff <= 180) {
+    return { styleClass: 'alert-row-yellow', badge: '<span class="badge badge-alert-yellow">⚠️ Alerta Amarilla (&lt;6 Meses)</span>', hasAlert: true };
+  }
+  return { styleClass: '', badge: '<span class="badge badge-green">Vigente</span>', hasAlert: false };
+}
+
+function silenceAlert(lotId) {
+  let silenced = DB.get('f_silenced_alerts', []);
+  if (!silenced.includes(lotId)) {
+    silenced.push(lotId);
+    DB.set('f_silenced_alerts', silenced);
+  }
+  renderRealInventory();
+}
+
+function renderRealInventory() {
+  const tbody = document.getElementById('real-inventory-table-body');
+  if(!tbody) return;
+  
+  const searchType = document.getElementById('inv-search-type').value;
+  const prods = DB.get('f_prods', []);
+  const lots = DB.get('f_lots', []);
+
+  if(lots.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">No hay lotes ni stock registrado.</td></tr>`;
+    return;
+  }
+
+  let queryName = "";
+  let queryCat = "";
+
+  if (searchType === 'categoria') {
+    const selectCat = document.getElementById('inv-search-cat');
+    queryCat = selectCat ? selectCat.value : "";
+  } else {
+    const inputName = document.getElementById('inv-search');
+    queryName = inputName ? inputName.value.toLowerCase().trim() : "";
+  }
+
+  let html = "";
+  lots.forEach(l => {
+    const p = prods.find(x => x.id === l.prodId);
+    if (!p) return;
+
+    // Lógica del motor de filtrado por Tipo Escogido
+    if (searchType === 'categoria') {
+      if (queryCat && p.cat !== queryCat) return; 
+    } else {
+      if (queryName && !p.desc.toLowerCase().includes(queryName) && !l.code.toLowerCase().includes(queryName)) return;
+    }
+
+    const alertStatus = checkExpiryStatus(l.expiry, l.id);
+
+    html += `
+      <tr class="${alertStatus.styleClass}">
+        <td><strong>${p.id}</strong><br><small class="badge" style="background:rgba(255,255,255,0.1);">${l.code}</small></td>
+        <td>
+          <span style="color:#fff; font-weight:600;">${p.desc}</span>
+          <br><small style="color:var(--p2); font-size:0.75rem;">Categoría: ${p.cat || 'General'}</small>
+        </td>
+        <td><strong>${l.expiry}</strong></td>
+        <td>${alertStatus.badge}</td>
+        <td><span class="badge badge-purple">${l.stockUnits} uds</span></td>
+        <td>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="openEditModal('${l.id}')"><i class="ri-edit-2-line"></i></button>
+            ${alertStatus.hasAlert ? `<button class="btn btn-danger" style="padding:4px 8px;" onclick="silenceAlert('${l.id}')"><i class="ri-notification-off-line"></i></button>` : ''}
+            <button class="btn btn-danger" style="padding:4px 8px; background: rgba(239, 68, 68, 0.2);" onclick="deleteLot('${l.id}')"><i class="ri-delete-bin-line"></i></button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html || `<tr><td colspan="6" style="text-align:center; color:var(--muted);">Sin stock que coincida con la búsqueda.</td></tr>`;
+}
+
+function deleteLot(lotId) {
+  if (confirm("⚠️ ¿Está seguro de que desea eliminar este registro de stock permanente?")) {
+    let lots = DB.get('f_lots', []);
+    lots = lots.filter(l => l.id !== lotId);
+    DB.set('f_lots', lots);
+    initSystem();
+  }
+}
+
+// ==========================================
+// 7. EDICIÓN INTERNA CON AUTORIZACIÓN
+// ==========================================
+function openEditModal(lotId) {
+  const lots = DB.get('f_lots', []);
+  const prods = DB.get('f_prods', []);
+  const lotItem = lots.find(l => l.id === lotId);
+  if(!lotItem) return;
+
+  const p = prods.find(x => x.id === lotItem.prodId);
+
+  if(document.getElementById('edit-target-lot-id')) document.getElementById('edit-target-lot-id').value = lotId;
+  if(document.getElementById('edit-modal-title')) document.getElementById('edit-modal-title').innerText = `${p ? p.desc : 'Medicamento'} - Lote: ${lotItem.code}`;
+  if(document.getElementById('edit-new-stock')) document.getElementById('edit-new-stock').value = lotItem.stockUnits;
+  if(document.getElementById('edit-new-expiry')) document.getElementById('edit-new-expiry').value = lotItem.expiry;
+  
+  if(document.getElementById('edit-auth-secret')) document.getElementById('edit-auth-secret').value = "";
+  if(document.getElementById('edit-step-auth')) document.getElementById('edit-step-auth').style.display = "block";
+  if(document.getElementById('edit-step-fields')) document.getElementById('edit-step-fields').style.display = "none";
+  if(document.getElementById('edit-inventory-modal')) document.getElementById('edit-inventory-modal').style.display = "flex";
+}
+
+function unlockEditFields() {
+  const codeInput = document.getElementById('edit-auth-secret') ? document.getElementById('edit-auth-secret').value : '';
+  if(codeInput === AUTH.secret) {
+    if(document.getElementById('edit-step-auth')) document.getElementById('edit-step-auth').style.display = "none";
+    if(document.getElementById('edit-step-fields')) document.getElementById('edit-step-fields').style.display = "block";
+  } else {
+    alert("🔒 Código secreto inválido. Acceso de edición denegado.");
+  }
+}
+
+function saveInventoryEdits() {
+  const lotId = document.getElementById('edit-target-lot-id') ? document.getElementById('edit-target-lot-id').value : '';
+  const newStock = parseInt(document.getElementById('edit-new-stock') ? document.getElementById('edit-new-stock').value : '0');
+  const newExpiry = document.getElementById('edit-new-expiry') ? document.getElementById('edit-new-expiry').value : '';
+
+  if(isNaN(newStock) || newStock < 0) { alert("Ingrese un stock físico válido."); return; }
+  if(!newExpiry) { alert("Ingrese una fecha de vencimiento válida."); return; }
+
+  let lots = DB.get('f_lots', []);
+  let index = lots.findIndex(l => l.id === lotId);
+
+  if(index !== -1) {
+    lots[index].stockUnits = newStock;
+    lots[index].expiry = newExpiry;
+    
+    let silenced = DB.get('f_silenced_alerts', []);
+    silenced = silenced.filter(id => id !== lotId);
+    DB.set('f_silenced_alerts', silenced);
+
+    DB.set('f_lots', lots);
+    alert("Los cambios se aplicaron perfectamente en el Kárdex.");
+    closeEditModal();
+    initSystem();
+  }
+}
+
+function closeEditModal() {
+  if(document.getElementById('edit-inventory-modal')) document.getElementById('edit-inventory-modal').style.display = "none";
+}
+
+// ==========================================
+// 8. REGISTROS, FORMULARIOS Y PRECIOS
+// ==========================================
+function renderDropdowns() {
+  const cSel = document.getElementById('p-cat');
+  const fSel = document.getElementById('p-forma');
+  const sSel = document.getElementById('sim-prod');
+  
+  const cats = DB.get('f_cats', []);
+  const formas = DB.get('f_formas', []);
+  const prods = DB.get('f_prods', []);
+
+  if(cSel) cSel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  if(fSel) fSel.innerHTML = formas.map(f => `<option value="${f}">${f}</option>`).join('');
+  if(sSel) sSel.innerHTML = prods.map(p => `<option value="${p.id}">${p.desc}</option>`).join('');
+}
+
+function addCategory() {
+  const val = prompt("Ingrese el nombre de la nueva categoría (Ej: Antigripales, Pediatría):");
+  if(!val || !val.trim()) return;
+  
+  let cats = DB.get('f_cats', []);
+  const nuevaCat = val.trim();
+  
+  if(!cats.includes(nuevaCat)) {
+    cats.push(nuevaCat);
+    DB.set('f_cats', cats);
+    alert(`✅ Categoría "${nuevaCat}" agregada.`);
+  } else {
+    alert("⚠️ Esta categoría ya existe.");
+  }
+  renderDropdowns();
+}
+
+function addForma() {
+  const val = prompt("Ingrese la nueva forma farmacéutica (Ej: Crema, Gotas, Inhalador):");
+  if(!val || !val.trim()) return;
+  
+  let formas = DB.get('f_formas', []);
+  const nuevaForma = val.trim();
+  
+  if(!formas.includes(nuevaForma)) {
+    formas.push(nuevaForma);
+    DB.set('f_formas', formas);
+    alert(`✅ Forma farmacéutica "${nuevaForma}" agregada.`);
+  } else {
+    alert("⚠️ Esta forma farmacéutica ya existe.");
+  }
+  renderDropdowns();
+}
+
+function saveProduct() {
+  const desc = document.getElementById('p-desc').value.trim();
+  const boxUnits = parseInt(document.getElementById('p-box-units').value) || 1;
+  const blisterUnits = parseInt(document.getElementById('p-blister-units').value) || 1;
+  const cat = document.getElementById('p-cat').value;
+  const forma = document.getElementById('p-forma').value;
+  const barcode = document.getElementById('p-barcode').value.trim();
+  const priceBox = parseFloat(document.getElementById('p-price-box').value) || 0;
+  const priceUnit = parseFloat(document.getElementById('p-price-unit').value) || 0;
+  const cost = parseFloat(document.getElementById('p-cost').value) || 0;
+  const costMode = document.getElementById('p-cost-mode').value;
+  const useIgv = document.getElementById('p-afecto-igv').checked;
+
+  if(!desc) { alert("Ingrese el nombre/descripción"); return; }
+
+  let prods = DB.get('f_prods', []);
+  const editIdEl = document.getElementById('p-id-edit');
+  const editId = editIdEl ? editIdEl.value : '';
+
+  if (editId) {
+    let idx = prods.findIndex(x => x.id === editId);
+    if (idx !== -1) {
+      prods[idx].desc = desc;
+      prods[idx].boxUnits = boxUnits;
+      prods[idx].blisterUnits = blisterUnits;
+      prods[idx].cat = cat;
+      prods[idx].forma = forma;
+      prods[idx].barcode = barcode;
+      prods[idx].priceBox = priceBox;
+      prods[idx].priceUnit = priceUnit;
+      prods[idx].cost = cost;
+      prods[idx].costMode = costMode;
+      prods[idx].useIgv = useIgv;
+      
+      DB.set('f_prods', prods);
+      alert("✅ Producto actualizado en el Vademécum.");
+      document.getElementById('p-id-edit').value = '';
+    }
+  } else {
+    const newId = "PROD-" + String(prods.length + 1).padStart(3, '0');
+    prods.push({
+      id: newId, desc: desc, boxUnits: boxUnits, blisterUnits: blisterUnits,
+      cat: cat, forma: forma, barcode: barcode, cost: cost, costMode: costMode,
+      priceBox: priceBox, priceUnit: priceUnit, useIgv: useIgv
+    });
+    DB.set('f_prods', prods);
+    alert("✅ Producto creado exitosamente.");
+  }
+
+  document.getElementById('p-desc').value = '';
+  document.getElementById('p-barcode').value = '';
+  document.getElementById('p-price-box').value = '0.00';
+  document.getElementById('p-price-unit').value = '0.00';
+  document.getElementById('p-cost').value = '0.00';
+  initSystem();
+}
+
+function handleCatalogProductSearch(val) {
+  const box = document.getElementById('catalog-search-box');
+  if (!box) return;
+  if (!val.trim()) { box.style.display = 'none'; return; }
+
+  const prods = DB.get('f_prods', []);
+  const query = val.toLowerCase();
+  const filtered = prods.filter(p => p.desc.toLowerCase().includes(query) || (p.barcode && p.barcode.includes(query)));
+
+  if (filtered.length === 0) {
+    box.innerHTML = `<div style="padding: 10px; color: var(--muted);">No hay coincidencias...</div>`;
+  } else {
+    box.innerHTML = filtered.map(p => `
+      <div class="predictive-item" onclick="loadProductToEditForm('${p.id}')">
+        <span>${p.desc}</span>
+      </div>
+    `).join('');
+  }
+  box.style.display = 'block';
+}
+
+function loadProductToEditForm(pid) {
+  const prods = DB.get('f_prods', []);
+  const p = prods.find(item => item.id === pid);
+  if (p) {
+    document.getElementById('p-id-edit').value = p.id;
+    document.getElementById('p-desc').value = p.desc;
+    document.getElementById('p-box-units').value = p.boxUnits;
+    document.getElementById('p-blister-units').value = p.blisterUnits;
+    document.getElementById('p-cat').value = p.cat;
+    document.getElementById('p-forma').value = p.forma;
+    document.getElementById('p-barcode').value = p.barcode || '';
+    document.getElementById('p-cost').value = p.cost || 0;
+    document.getElementById('p-cost-mode').value = p.costMode || 'Caja';
+    document.getElementById('p-price-box').value = p.priceBox || 0;
+    document.getElementById('p-price-unit').value = p.priceUnit || 0;
+    document.getElementById('p-afecto-igv').checked = p.useIgv;
+    alert(`✏️ Modificando: ${p.desc}. Presione 'Registrar Medicamento' al finalizar para guardar.`);
+  }
+  document.getElementById('catalog-search-box').style.display = 'none';
+  document.getElementById('catalog-search-input').value = '';
+}
+
+// ==========================================
+// 9. SIMULADOR DE PEDIBOS (MODIFICADO)
+// ==========================================
+function renderSimulation() {
+  const tbody = document.getElementById('simulation-table-body');
+  const sim = DB.get('f_sim', []);
+  const prods = DB.get('f_prods', []);
+  if(!tbody) return;
+
+  if(sim.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted);">Sin pre-órdenes.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sim.map((s, index) => {
+    const p = prods.find(x => x.id === s.prodId) || { desc: "—", priceBox: 0, priceUnit: 0 };
+    const priceEst = s.type === 'Caja' ? (p.priceBox || 0) : (p.priceUnit || 0);
+    
+    // Aseguramos que mantenga la consistencia si ya tenía una fecha asignada en caliente
+    const inputFechaStr = s.expiry ? s.expiry : "";
+
+    return `
+      <tr>
+        <td><strong>${p.desc}</strong></td>
+        <td>${s.qty} ${s.type}(s)</td>
+        <td>
+          <input type="date" class="input-ctrl" style="padding:4px; font-size:0.8rem; max-width:140px;" 
+            id="sim-expiry-${index}" 
+            value="${inputFechaStr}" 
+            onchange="updateSimulationExpiryDate(${index}, this.value)">
+        </td>
+        <td>S/. ${(priceEst * s.qty).toFixed(2)}</td>
+      </tr>`;
+  }).join('');
+}
+
+function updateSimulationExpiryDate(index, dateValue) {
+  let sim = DB.get('f_sim', []);
+  if(sim[index]) {
+    sim[index].expiry = dateValue;
+    DB.set('f_sim', sim);
+  }
+}
+
+function addToSimulation() {
+  const pid = document.getElementById('sim-prod') ? document.getElementById('sim-prod').value : '';
+  const qty = parseInt(document.getElementById('sim-qty') ? document.getElementById('sim-qty').value : '1') || 1;
+  const type = document.getElementById('sim-type') ? document.getElementById('sim-type').value : 'Caja';
+
+  let sim = DB.get('f_sim', []);
+  // Se inserta vacío para obligar al usuario a digitar la fecha real de la caja al recibirla
+  sim.push({ prodId: pid, qty: qty, type: type, expiry: "" });
+  DB.set('f_sim', sim);
+  renderSimulation();
+}
+
+function commitSimulation() {
+  let sim = DB.get('f_sim', []);
+  if(sim.length === 0) return;
+
+  // Validación: Comprobar que todas las filas tengan su fecha ingresada
+  let valid = true;
+  sim.forEach((s, idx) => {
+    if(!s.expiry) {
+      valid = false;
+    }
+  });
+
+  if(!valid) {
+    alert("⚠️ Por favor, complete la Fecha de Vencimiento de cada producto en la lista antes de subirlo al sistema.");
+    return;
+  }
+
+  let lots = DB.get('f_lots', []);
+  const prods = DB.get('f_prods', []);
+  const LOTE_DESTINO = "LOTE-VILLAZAR"; 
+
+  sim.forEach(s => {
+    const p = prods.find(x => x.id === s.prodId);
+    if(!p) return;
+
+    let totalUnitsCalculated = s.qty;
+    if(s.type === 'Caja') totalUnitsCalculated = s.qty * p.boxUnits;
+
+    // Ahora buscamos que coincida el producto, el lote e idealmente la misma fecha de vencimiento
+    let existingSimLot = lots.find(l => 
+      l.prodId === s.prodId && 
+      l.code.toUpperCase().trim() === LOTE_DESTINO.toUpperCase().trim() &&
+      l.expiry === s.expiry
+    );
+
+    if (existingSimLot) {
+      existingSimLot.stockUnits += totalUnitsCalculated;
+    } else {
+      lots.push({
+        id: "L-SIM-" + Date.now() + Math.floor(Math.random() * 100),
+        prodId: s.prodId,
+        code: LOTE_DESTINO.toUpperCase().trim(),
+        expiry: s.expiry, // Guarda con la fecha ingresada manualmente
+        stockUnits: totalUnitsCalculated
+      });
+    }
+  });
+
+  DB.set('f_lots', lots);
+  DB.set('f_sim', []);
+  alert("✅ ¡Pedido verificado e ingresado al Inventario Real con sus fechas de vencimiento!");
+  initSystem();
+}
+
+function clearSimulation() {
+  DB.set('f_sim', []);
+  renderSimulation();
+}
+
+function renderCatalog() {
+  const catalogBody = document.getElementById("catalog-table-body");
+  if (!catalogBody) return;
+
+  const prods = DB.get('f_prods', []);
+  catalogBody.innerHTML = "";
+  
+  prods.forEach((prod, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${prod.id}</td><td><strong>${prod.desc}</strong></td><td>${prod.cat}</td><td>${prod.forma}</td>`;
+    catalogBody.appendChild(tr);
+  });
+}
+
+function renderInventory() {
+  const tbody = document.getElementById('inventory-table-body');
+  const lots = DB.get('f_lots', []);
+  const prods = DB.get('f_prods', []);
+  if(!tbody) return;
+
+  tbody.innerHTML = lots.map(l => {
+    const p = prods.find(x => x.id === l.prodId) || { desc: "Desconocido" };
+    return `<tr><td><strong>${p.desc}</strong></td><td><span>${l.code}</span></td><td>${l.expiry}</td><td><strong>${l.stockUnits} uds</strong></td></tr>`;
+  }).join('');
+}
+
+function renderPricesTable() {
+  const tbody = document.getElementById('prices-table-body');
+  const prods = DB.get('f_prods', []);
+  if(!tbody) return;
+
+  tbody.innerHTML = prods.map(p => `
+    <tr>
+      <td><strong>${p.desc}</strong></td>
+      <td><input type="number" step="0.01" class="input-ctrl" style="padding:4px; width:80px;" id="cost-${p.id}" value="${p.cost || 0}"></td>
+      <td style="text-align:center;"><input type="checkbox" id="igv-${p.id}" ${p.useIgv ? 'checked' : ''}></td>
+      <td><input type="number" step="0.01" class="input-ctrl" style="padding:4px; width:90px;" id="pbox-${p.id}" value="${p.priceBox || 0}"></td>
+      <td><input type="number" step="0.01" class="input-ctrl" style="padding:4px; width:90px;" id="punit-${p.id}" value="${p.priceUnit || 0}"></td>
+      <td><button class="btn btn-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="updatePriceRow('${p.id}')"><i class="ri-save-line"></i></button></td>
+    </tr>
+  `).join('');
+}
+
+function updatePriceRow(pid) {
+  let prods = DB.get('f_prods', []);
+  let idx = prods.findIndex(x => x.id === pid);
+  if(idx === -1) return;
+
+  if (document.getElementById(`cost-${pid}`)) prods[idx].cost = parseFloat(document.getElementById(`cost-${pid}`).value) || 0;
+  if (document.getElementById(`igv-${pid}`)) prods[idx].useIgv = document.getElementById(`igv-${pid}`).checked;
+  if (document.getElementById(`pbox-${pid}`)) prods[idx].priceBox = parseFloat(document.getElementById(`pbox-${pid}`).value) || 0;
+  if (document.getElementById(`punit-${pid}`)) prods[idx].priceUnit = parseFloat(document.getElementById(`punit-${pid}`).value) || 0;
+
+  DB.set('f_prods', prods);
+  initSystem();
+  alert("Precios actualizados.");
+}
+
+// ==========================================
+// 10. EXPORTAR E IMPORTAR COPIAS DE RESPALDO
+// ==========================================
+function exportData() {
+  try {
+    const backupData = {
+      f_prods: JSON.parse(localStorage.getItem('f_prods')) || [],
+      f_lots: JSON.parse(localStorage.getItem('f_lots')) || [],
+      f_sales: JSON.parse(localStorage.getItem('f_sales')) || [],
+      f_sim: JSON.parse(localStorage.getItem('f_sim')) || [],
+      f_cats: JSON.parse(localStorage.getItem('f_cats')) || [],
+      f_formas: JSON.parse(localStorage.getItem('f_formas')) || [],
+      f_silenced_alerts: JSON.parse(localStorage.getItem('f_silenced_alerts')) || []
+    };
+
+    if (backupData.f_prods.length === 0 && backupData.f_sales.length === 0) {
+      if (!confirm("La base de datos está vacía. ¿Descargar respaldo de todas formas?")) return;
+    }
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    const fecha = new Date().toISOString().slice(0, 10);
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `Copia_Seguridad_Farma_${fecha}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  } catch (error) {
+    alert("❌ Error al generar la copia de seguridad: " + error.message);
+  }
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      if (!importedData.hasOwnProperty('f_prods') || !importedData.hasOwnProperty('f_sales')) {
+        alert("❌ Archivo de respaldo dañado o no compatible.");
+        return;
+      }
+
+      const p1 = confirm("⚠️ ¡ADVERTENCIA CRÍTICA! ⚠️\n\nEstás a punto de restaurar una copia externa. Se reemplazará todo el stock y ventas del local.\n\n¿Proceder?");
+      if (p1) {
+        localStorage.setItem('f_prods', JSON.stringify(importedData.f_prods));
+        localStorage.setItem('f_lots', JSON.stringify(importedData.f_lots || []));
+        localStorage.setItem('f_sales', JSON.stringify(importedData.f_sales || []));
+        localStorage.setItem('f_sim', JSON.stringify(importedData.f_sim || []));
+        localStorage.setItem('f_cats', JSON.stringify(importedData.f_cats || []));
+        localStorage.setItem('f_formas', JSON.stringify(importedData.f_formas || []));
+        localStorage.setItem('f_silenced_alerts', JSON.stringify(importedData.f_silenced_alerts || []));
+        alert("✅ ¡Base de datos restaurada! El sistema se reiniciará.");
+        window.location.reload();
+      }
+    } catch (err) {
+      alert("❌ Error crítico en lectura: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; 
+}
+  </script>
+</body>
+</html>
